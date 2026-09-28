@@ -106,10 +106,13 @@ export async function PUT(
             variantId: updatedVariant.id,
             warehouseId: warehouse.id,
             quantity: parseInt(v.quantity) || 0,
-            trackInventory: true
+            trackInventory: body.inventory?.trackInventory ?? true,
+            lowStockThreshold: parseInt(body.inventory?.lowStockThreshold) || 5
           },
           update: {
-            quantity: parseInt(v.quantity) || 0
+            quantity: parseInt(v.quantity) || 0,
+            trackInventory: body.inventory?.trackInventory ?? true,
+            lowStockThreshold: parseInt(body.inventory?.lowStockThreshold) || 5
           }
         });
       }
@@ -120,10 +123,13 @@ export async function PUT(
           productId: updatedProduct.id,
           warehouseId: warehouse.id,
           quantity: parseInt(body.quantity) || 0,
-          trackInventory: true
+          trackInventory: body.inventory?.trackInventory ?? true,
+          lowStockThreshold: parseInt(body.inventory?.lowStockThreshold) || 5
         },
         update: {
-          quantity: parseInt(body.quantity) || 0
+          quantity: parseInt(body.quantity) || 0,
+          trackInventory: body.inventory?.trackInventory ?? true,
+          lowStockThreshold: parseInt(body.inventory?.lowStockThreshold) || 5
         }
       });
     }

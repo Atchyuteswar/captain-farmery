@@ -6,7 +6,8 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     const { id } = await params;
     const data = await req.json();
     // @ts-ignore
-    const faq = await prisma.fAQ.update({
+    const faqClient = prisma.faq || prisma.fAQ;
+    const faq = await faqClient.update({
       where: { id },
       data: {
         question: data.question,

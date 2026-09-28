@@ -6,7 +6,8 @@ import { revalidatePath } from "next/cache";
 
 export default async function AdminFAQsPage() {
   // @ts-ignore
-  const faqs = await prisma.fAQ.findMany({
+  const faqClient = prisma.faq || prisma.fAQ;
+  const faqs = await faqClient.findMany({
     orderBy: { sortOrder: "asc" }
   });
 
@@ -15,7 +16,8 @@ export default async function AdminFAQsPage() {
     const id = formData.get("id") as string;
     if (id) {
       // @ts-ignore
-      await prisma.fAQ.delete({ where: { id } });
+      const faqClient = prisma.faq || prisma.fAQ;
+      await faqClient.delete({ where: { id } });
       revalidatePath("/admin/faqs");
       revalidatePath("/");
     }

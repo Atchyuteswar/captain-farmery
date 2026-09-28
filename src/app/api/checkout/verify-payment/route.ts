@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
+import { sendOrderConfirmationEmail } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
           paymentStatus: "PAID",
           status: "CONFIRMED",
         },
-        include: { items: true }
+        include: { items: true, user: true, shippingAddress: true }
       });
 
       // Deduct inventory
@@ -75,6 +76,29 @@ export async function POST(request: Request) {
           notes: "Payment received and verified via Razorpay.",
         },
       });
+      
+      // Send Confirmation Email
+      try {
+        const customerEmail = order.user?.email || order.guestEmail;
+        const customerName = order.shippingAddress?.fullName || order.user?.name || "Customer";
+        
+        if (customerEmail) {
+          await sendOrderConfirmationEmail({
+            email: customerEmail,
+            customerName: customerName,
+            orderNumber: order.orderNumber,
+            total: order.grandTotal,
+            items: order.items.map(item => ({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.unitPrice
+            }))
+          });
+        }
+      } catch (err) {
+        console.error("Failed to send order confirmation email:", err);
+      }
+
       return NextResponse.json({ success: true, orderId: payment.orderId });
     }
 

@@ -91,7 +91,8 @@ export async function POST(request: Request) {
             variantId: createdVariant.id,
             warehouseId: warehouse.id,
             quantity: parseInt(v.quantity) || 0,
-            trackInventory: true
+            trackInventory: body.inventory?.trackInventory ?? true,
+            lowStockThreshold: parseInt(body.inventory?.lowStockThreshold) || 5
           }
         });
       }
@@ -101,7 +102,8 @@ export async function POST(request: Request) {
           productId: product.id,
           warehouseId: warehouse.id,
           quantity: parseInt(body.quantity) || 0,
-          trackInventory: true
+          trackInventory: body.inventory?.trackInventory ?? true,
+          lowStockThreshold: parseInt(body.inventory?.lowStockThreshold) || 5
         }
       });
     }

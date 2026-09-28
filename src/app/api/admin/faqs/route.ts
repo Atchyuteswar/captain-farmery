@@ -5,7 +5,8 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
     // @ts-ignore
-    const faq = await prisma.fAQ.create({
+    const faqClient = prisma.faq || prisma.fAQ;
+    const faq = await faqClient.create({
       data: {
         question: data.question,
         answer: data.answer,

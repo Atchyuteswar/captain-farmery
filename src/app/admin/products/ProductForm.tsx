@@ -63,6 +63,12 @@ export default function ProductForm({
     quantity: product?.inventory?.quantity?.toString() || "0",
   });
 
+  // Inventory
+  const [inventory, setInventory] = useState({
+    trackInventory: product?.inventory?.trackInventory ?? true,
+    lowStockThreshold: product?.inventory?.lowStockThreshold?.toString() || "5",
+  });
+
   // Images
   const [images, setImages] = useState<ProductImage[]>(
     product?.images?.map((img: any) => ({ url: img.url, alt: img.alt || "" })) || []
@@ -138,6 +144,10 @@ export default function ProductForm({
         taxRate: formData.taxRate ? parseFloat(formData.taxRate) : 0,
         images,
         variants: variants.filter(v => v.name.trim() !== ""),
+        inventory: {
+          trackInventory: inventory.trackInventory,
+          lowStockThreshold: parseInt(inventory.lowStockThreshold) || 5,
+        }
       };
 
       const res = await fetch(url, {
@@ -166,6 +176,7 @@ export default function ProductForm({
     { id: "basic", label: "Basic Info", icon: Package },
     { id: "images", label: "Images", icon: ImageIcon },
     { id: "variants", label: "Variants & Pricing", icon: Layers },
+    { id: "inventory", label: "Inventory", icon: BarChart3 },
     { id: "seo", label: "SEO", icon: Search },
     { id: "shipping", label: "Shipping & Tax", icon: Truck },
   ];
@@ -553,6 +564,58 @@ export default function ProductForm({
             )}
           </div>
         )}
+
+        {/* ========== INVENTORY ========== */}
+        {activeTab === "inventory" && (
+          <div className="bg-background border rounded-3xl p-6 md:p-8 space-y-6">
+            <h2 className="text-xl font-bold border-b pb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-primary" /> Inventory Management
+            </h2>
+            <p className="text-sm text-muted-foreground mb-6">Configure how stock is tracked and when you are alerted.</p>
+            
+            <div className="bg-muted/30 p-6 rounded-2xl border space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-bold">Track Inventory</h3>
+                  <p className="text-sm text-muted-foreground">Automatically decrease stock when orders are placed.</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    className="sr-only peer"
+                    checked={inventory.trackInventory}
+                    onChange={e => setInventory({...inventory, trackInventory: e.target.checked})}
+                  />
+                  <div className="w-11 h-6 bg-muted-foreground/30 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                </label>
+              </div>
+
+              {inventory.trackInventory && (
+                <div className="pt-4 border-t">
+                  <label className="text-sm font-medium mb-2 block">Low Stock Threshold</label>
+                  <p className="text-xs text-muted-foreground mb-3">You will be alerted when stock reaches this amount or below.</p>
+                  <input 
+                    type="number"
+                    min="0"
+                    value={inventory.lowStockThreshold}
+                    onChange={e => setInventory({...inventory, lowStockThreshold: e.target.value})}
+                    className="w-full md:w-48 border rounded-xl px-4 py-3 bg-background focus:ring-primary focus:border-primary"
+                    placeholder="5"
+                  />
+                </div>
+              )}
+            </div>
+            
+            <div className="bg-blue-50 text-blue-800 p-4 rounded-xl border border-blue-100 flex gap-3 mt-6">
+              <Package className="w-5 h-5 shrink-0" />
+              <div className="text-sm">
+                <span className="font-bold block mb-1">Note about Variants</span>
+                If you have variants (e.g. 500g, 1Kg), stock quantities are managed on the "Variants & Pricing" tab. If you have no variants, the total stock quantity is set on the "Basic Info" tab.
+              </div>
+            </div>
+          </div>
+        )}
+
 
         {/* ========== SEO ========== */}
         {activeTab === "seo" && (
