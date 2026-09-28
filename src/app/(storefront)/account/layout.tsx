@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { User, Package, MapPin, LogOut } from "lucide-react";
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -53,8 +53,11 @@ export default async function AccountLayout({
               </Link>
               
               <div className="pt-4 mt-4 border-t border-border">
-                <form action="/api/auth/signout" method="POST">
-                  <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 h-auto">
+                <form action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}>
+                  <Button type="submit" variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 h-auto">
                     <LogOut className="w-5 h-5 mr-3" /> Sign Out
                   </Button>
                 </form>

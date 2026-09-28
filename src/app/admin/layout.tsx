@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { signOut } from "@/auth";
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -72,8 +73,11 @@ export default function AdminLayout({
         </nav>
         
         <div className="p-4 border-t">
-          <form action="/api/auth/signout" method="POST">
-            <Button variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 h-auto">
+          <form action={async () => {
+            "use server";
+            await signOut({ redirectTo: "/login" });
+          }}>
+            <Button type="submit" variant="ghost" className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 px-4 py-3 h-auto">
               <LogOut className="w-5 h-5 mr-3" /> Sign Out
             </Button>
           </form>
