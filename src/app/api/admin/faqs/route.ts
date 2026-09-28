@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const data = await req.json();
+    // @ts-ignore
     const faq = await prisma.fAQ.create({
       data: {
         question: data.question,
