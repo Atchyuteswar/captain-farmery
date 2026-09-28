@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, MapPin, Phone } from "lucide-react";
 
 export default function Footer() {
@@ -9,7 +10,7 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <h3 className="font-serif text-2xl font-bold text-primary">Captain Farmery</h3>
+              <Image src="/logo.png" alt="Captain Farmery" width={150} height={50} className="object-contain mb-2" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Rooted in tradition, driven by purity. Authentic, agricultural, premium D2C farm-to-home products delivered straight to your door.

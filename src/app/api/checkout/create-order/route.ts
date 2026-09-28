@@ -11,17 +11,78 @@ const razorpay = new Razorpay({
 export async function POST(request: Request) {
   try {
     const session = await auth();
-    const { items, totalAmount, shippingAmount, discountAmount, formData, shippingAddressId: clientAddressId } = await request.json();
+    // Intentionally ignoring client-side pricing to prevent tampering
+    const { items, formData, shippingAddressId: clientAddressId, couponCode } = await request.json();
 
     if (!items || items.length === 0) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    // Convert amount to paise (multiply by 100)
-    const grandTotal = totalAmount + (shippingAmount || 0) - (discountAmount || 0);
+    // 1. Securely calculate prices from database
+    let secureSubtotal = 0;
+    const orderItemsForDB = [];
+
+    for (const item of items) {
+      // Fetch fresh product/variant data from DB
+      const product = await prisma.product.findUnique({
+        where: { id: item.productId },
+        include: { variants: true }
+      });
+
+      if (!product) continue;
+
+      let actualPrice = product.basePrice;
+      let variantName = null;
+
+      if (item.variantId) {
+        const variant = product.variants.find(v => v.id === item.variantId);
+        if (variant) {
+          actualPrice = variant.price;
+          variantName = variant.name;
+        }
+      }
+
+      secureSubtotal += actualPrice * item.quantity;
+
+      orderItemsForDB.push({
+        productId: item.productId,
+        variantId: item.variantId || null,
+        name: product.name,
+        sku: item.productId, // fallback
+        quantity: item.quantity,
+        unitPrice: actualPrice,
+        totalPrice: actualPrice * item.quantity,
+        productSnapshot: {
+          name: product.name,
+          price: actualPrice,
+          image: item.image,
+          variantName: variantName,
+        },
+      });
+
+      // Check inventory
+      const inventory = await prisma.inventory.findFirst({
+        where: item.variantId ? { variantId: item.variantId } : { productId: item.productId, variantId: null }
+      });
+
+      if (inventory && inventory.trackInventory && inventory.quantity < item.quantity) {
+        return NextResponse.json({ error: `Not enough stock for ${product.name} ${variantName ? `(${variantName})` : ''}` }, { status: 400 });
+      }
+    }
+
+    // 2. Shipping calculation
+    const shippingAmount = secureSubtotal > 999 ? 0 : 50;
+
+    // 3. Discount calculation
+    let discountAmount = 0;
+    if (couponCode === "WELCOME10") {
+      discountAmount = secureSubtotal * 0.1;
+    }
+
+    const grandTotal = secureSubtotal + shippingAmount - discountAmount;
     const amountInPaise = Math.round(grandTotal * 100);
 
-    // Create order in Razorpay
+    // 4. Create order in Razorpay
     const options = {
       amount: amountInPaise,
       currency: "INR",
@@ -30,9 +91,8 @@ export async function POST(request: Request) {
 
     const razorpayOrder = await razorpay.orders.create(options);
 
-    // Save order + order items in DB
+    // 5. Save order in DB
     if (session?.user?.id) {
-      // Optionally save the shipping address
       let shippingAddressId: string | undefined = clientAddressId;
       if (!shippingAddressId && formData?.address && formData?.city && formData?.pincode) {
         const address = await prisma.address.create({
@@ -51,29 +111,15 @@ export async function POST(request: Request) {
 
       const orderData: any = {
         orderNumber: razorpayOrder.id,
-        subtotal: totalAmount,
-        shippingAmount: shippingAmount || 0,
-        discount: discountAmount || 0,
+        subtotal: secureSubtotal,
+        shippingAmount: shippingAmount,
+        discount: discountAmount,
         grandTotal: grandTotal,
         status: "PENDING",
         paymentStatus: "UNPAID",
         currency: "INR",
         items: {
-          create: items.map((item: any) => ({
-            productId: item.productId,
-            variantId: item.variantId || null,
-            name: item.name,
-            sku: item.productId, // fallback SKU
-            quantity: item.quantity,
-            unitPrice: item.price,
-            totalPrice: item.price * item.quantity,
-            productSnapshot: {
-              name: item.name,
-              price: item.price,
-              image: item.image,
-              variantName: item.variantName,
-            },
-          })),
+          create: orderItemsForDB,
         },
       };
 

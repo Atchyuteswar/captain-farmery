@@ -33,13 +33,39 @@ export async function POST(request: Request) {
         },
       });
 
-      await prisma.order.update({
+      const order = await prisma.order.update({
         where: { id: payment.orderId },
         data: {
           paymentStatus: "PAID",
           status: "CONFIRMED",
         },
+        include: { items: true }
       });
+
+      // Deduct inventory
+      for (const item of order.items) {
+        const inventory = await prisma.inventory.findFirst({
+          where: item.variantId ? { variantId: item.variantId } : { productId: item.productId, variantId: null }
+        });
+        if (inventory && inventory.trackInventory) {
+          await prisma.inventory.update({
+            where: { id: inventory.id },
+            data: {
+              quantity: { decrement: item.quantity }
+            }
+          });
+          // Log movement
+          await prisma.inventoryMovement.create({
+            data: {
+              inventoryId: inventory.id,
+              quantity: -item.quantity,
+              type: "SALE",
+              referenceId: order.id,
+              notes: "Order placed"
+            }
+          });
+        }
+      }
 
       // Add timeline entry
       await prisma.orderTimeline.create({
@@ -49,6 +75,7 @@ export async function POST(request: Request) {
           notes: "Payment received and verified via Razorpay.",
         },
       });
+      return NextResponse.json({ success: true, orderId: payment.orderId });
     }
 
     return NextResponse.json({ success: true });

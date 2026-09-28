@@ -3,12 +3,30 @@ import { DollarSign, ShoppingBag, Users, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminDashboardPage() {
-  // In a real scenario, you'd aggregate these stats from the DB
+  const revenueAgg = await prisma.order.aggregate({
+    _sum: { grandTotal: true },
+    where: { status: { not: "CANCELLED" } }
+  });
+  const totalRevenue = revenueAgg._sum.grandTotal || 0;
+
+  const totalOrders = await prisma.order.count({
+    where: { status: { not: "CANCELLED" } }
+  });
+
+  const activeCustomers = await prisma.user.count({
+    where: { role: "CUSTOMER" }
+  });
+
+  const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+  const formatCurrency = (val: number) => 
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(val);
+
   const stats = [
-    { label: "Total Revenue", value: "₹1,24,500", icon: DollarSign, trend: "+12%" },
-    { label: "Total Orders", value: "342", icon: ShoppingBag, trend: "+5%" },
-    { label: "Active Customers", value: "1,204", icon: Users, trend: "+18%" },
-    { label: "Avg. Order Value", value: "₹364", icon: TrendingUp, trend: "+2%" },
+    { label: "Total Revenue", value: formatCurrency(totalRevenue), icon: DollarSign, trend: "+0%" },
+    { label: "Total Orders", value: totalOrders.toString(), icon: ShoppingBag, trend: "+0%" },
+    { label: "Active Customers", value: activeCustomers.toString(), icon: Users, trend: "+0%" },
+    { label: "Avg. Order Value", value: formatCurrency(avgOrderValue), icon: TrendingUp, trend: "+0%" },
   ];
 
   const recentOrders = await prisma.order.findMany({
@@ -71,7 +89,7 @@ export default async function AdminDashboardPage() {
               ) : (
                 recentOrders.map((order) => (
                   <tr key={order.id} className="border-b last:border-0 hover:bg-muted/20 transition-colors">
-                    <td className="p-4 font-medium">#{order.id.slice(-6).toUpperCase()}</td>
+                    <td className="p-4 font-medium">#{order.id.slice(-8).toUpperCase()}</td>
                     <td className="p-4">
                       <div className="font-medium">{order.user?.name || "Guest"}</div>
                       <div className="text-xs text-muted-foreground">{order.user?.email}</div>

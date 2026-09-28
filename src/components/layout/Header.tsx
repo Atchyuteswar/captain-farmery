@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Search, User, Heart, Menu, ShieldCheck, X, Moon, Sun } from "lucide-react";
+import Image from "next/image";
 import { Button, buttonVariants } from "@/components/ui/button";
 import SearchBar from "@/components/layout/SearchBar";
 import CartButton from "@/components/cart/CartButton";
@@ -26,9 +27,7 @@ export default function Header() {
               <Menu className="h-5 w-5" />
             </Button>
             <Link href="/" className="flex items-center gap-2">
-              <span className="font-serif text-2xl font-bold tracking-tight text-primary">
-                Captain Farmery
-              </span>
+              <Image src="/logo.png" alt="Captain Farmery" width={150} height={50} className="object-contain" />
             </Link>
           </div>
 
@@ -38,6 +37,7 @@ export default function Header() {
             <Link href="/category/pure-honey" className="hover:text-primary transition-colors">Honey</Link>
             <Link href="/category/spices" className="hover:text-primary transition-colors">Spices</Link>
             <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
+            <Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
           </nav>
 
           {/* Search & Actions */}
@@ -100,6 +100,9 @@ export default function Header() {
           </Link>
           <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
             About Us
+          </Link>
+          <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
+            Contact Us
           </Link>
 
           <div className="border-t my-4" />

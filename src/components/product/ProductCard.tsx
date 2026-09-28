@@ -26,6 +26,7 @@ export default function ProductCard({
   isNew,
   isBestSeller,
 }: ProductCardProps) {
+  console.log("ProductCard rendered for:", id, name, "basePrice:", basePrice);
   // Use placeholder image if none provided
   const image = imageUrl || "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=600&auto=format&fit=crop";
 
@@ -80,11 +81,11 @@ export default function ProductCard({
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
           <div className="flex flex-col">
             <span className="font-bold text-lg text-foreground">
-              ₹{basePrice.toFixed(2)}
+              ₹{Number(basePrice || 0).toFixed(2)}
             </span>
             {compareAtPrice && (
               <span className="text-sm text-muted-foreground line-through">
-                ₹{compareAtPrice.toFixed(2)}
+                ₹{Number(compareAtPrice || 0).toFixed(2)}
               </span>
             )}
           </div>

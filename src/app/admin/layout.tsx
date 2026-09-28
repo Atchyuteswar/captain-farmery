@@ -5,7 +5,9 @@ import {
   Users, 
   Settings, 
   LogOut,
-  Image as ImageIcon
+  Image as ImageIcon,
+  MessageSquare,
+  HelpCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -48,6 +50,18 @@ export default function AdminLayout({
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium transition-colors"
           >
             <Users className="w-5 h-5 text-muted-foreground" /> Customers
+          </Link>
+          <Link 
+            href="/admin/reviews" 
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium transition-colors"
+          >
+            <MessageSquare className="w-5 h-5 text-muted-foreground" /> Reviews
+          </Link>
+          <Link 
+            href="/admin/faqs" 
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium transition-colors"
+          >
+            <HelpCircle className="w-5 h-5 text-muted-foreground" /> FAQs
           </Link>
           <Link 
             href="/admin/settings" 

@@ -1,8 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import ProductCard from "@/components/product/ProductCard";
-import ShopControls from "@/components/catalog/ShopControls"; // Trigger TS server cache rebuild
+import ShopControls from "@/components/catalog/ShopControls";
 
 export const revalidate = 3600;
+
+export const metadata = {
+  title: "Shop All Products | Captain Farmery",
+  description: "Browse our complete collection of pure, farm-fresh products. Raw honey, stone-ground spices, organic grains and more delivered to your door.",
+};
 
 export default async function ShopPage({
   searchParams,
@@ -28,6 +33,7 @@ export default async function ShopPage({
     },
     include: {
       category: true,
+      images: { take: 1 },
     },
     orderBy,
   });
@@ -66,6 +72,7 @@ export default async function ShopPage({
               shortDescription={product.shortDescription}
               basePrice={product.basePrice}
               compareAtPrice={product.compareAtPrice}
+              imageUrl={product.images?.[0]?.url}
               isNew={product.isNew}
               isBestSeller={product.isBestSeller}
             />

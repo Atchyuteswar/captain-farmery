@@ -1,5 +1,5 @@
 {
-  // Trigger TS language server restart
+  // Triggering TS restart
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],

@@ -1,9 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import ProductCard from "@/components/product/ProductCard";
 import ShopControls from "@/components/catalog/ShopControls";
+import { ChevronRight } from "lucide-react";
+import type { Metadata } from "next";
 
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await prisma.category.findUnique({ where: { slug } });
+  if (!category) return { title: "Category Not Found" };
+  return {
+    title: `${category.name} | Captain Farmery`,
+    description: category.description || `Shop ${category.name} products from Captain Farmery.`,
+  };
+}
 
 export default async function CategoryPage({
   params,
@@ -27,6 +40,7 @@ export default async function CategoryPage({
     include: {
       products: {
         where: { status: "ACTIVE" },
+        include: { images: { take: 1 } },
         orderBy,
       }
     },
@@ -41,6 +55,14 @@ export default async function CategoryPage({
       {/* Category Header */}
       <div className="bg-bg-secondary py-16 md:py-24">
         <div className="container mx-auto px-4 text-center max-w-3xl">
+          {/* Breadcrumbs */}
+          <nav className="flex items-center justify-center gap-1 text-sm text-muted-foreground mb-6" aria-label="Breadcrumb">
+            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
+            <ChevronRight className="w-3 h-3" />
+            <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-foreground font-medium">{category.name}</span>
+          </nav>
           <h1 className="font-serif text-4xl md:text-6xl font-bold text-foreground mb-6">
             {category.name}
           </h1>
@@ -76,6 +98,7 @@ export default async function CategoryPage({
                 shortDescription={product.shortDescription}
                 basePrice={product.basePrice}
                 compareAtPrice={product.compareAtPrice}
+                imageUrl={product.images?.[0]?.url}
                 isNew={product.isNew}
                 isBestSeller={product.isBestSeller}
               />

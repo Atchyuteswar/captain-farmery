@@ -60,7 +60,7 @@ export default async function AdminOrdersListPage() {
                   <tr key={order.id} className="border-b last:border-0 hover:bg-muted/20 transition-colors">
                     <td className="p-4 font-medium text-primary">
                       <Link href={`/admin/orders/${order.id}`}>
-                        #{order.id.slice(-6).toUpperCase()}
+                        #{order.id.slice(-8).toUpperCase()}
                       </Link>
                     </td>
                     <td className="p-4 text-sm">{order.createdAt.toLocaleDateString()}</td>
