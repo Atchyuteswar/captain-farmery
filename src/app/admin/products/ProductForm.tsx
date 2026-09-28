@@ -74,6 +74,36 @@ export default function ProductForm({
     product?.images?.map((img: any) => ({ url: img.url, alt: img.alt || "" })) || []
   );
   const [newImageUrl, setNewImageUrl] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const uploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to upload image");
+      }
+
+      const { url } = await res.json();
+      setImages(prev => [...prev, { url, alt: file.name }]);
+      toast.success("Image uploaded!");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   // Variants
   const [variants, setVariants] = useState<ProductVariant[]>(
@@ -430,19 +460,24 @@ export default function ProductForm({
               ))}
               
               {/* Add image input */}
-              <div className="aspect-square rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center p-4 gap-2">
-                <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
-                <input
-                  type="url"
-                  value={newImageUrl}
-                  onChange={e => setNewImageUrl(e.target.value)}
-                  placeholder="Paste image URL..."
-                  className="w-full text-xs border rounded-lg px-2 py-1.5 bg-muted/30 text-center"
-                  onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addImage(); } }}
-                />
-                <Button type="button" variant="outline" size="xs" onClick={addImage} className="rounded-full text-xs">
-                  <Plus className="w-3 h-3 mr-1" /> Add
-                </Button>
+              <div className="aspect-square rounded-2xl border-2 border-dashed border-border flex flex-col items-center justify-center p-4 gap-2 relative hover:bg-muted/30 transition-colors">
+                {isUploading ? (
+                  <div className="flex flex-col items-center text-muted-foreground">
+                    <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+                    <span className="text-xs">Uploading...</span>
+                  </div>
+                ) : (
+                  <>
+                    <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+                    <span className="text-xs text-muted-foreground text-center font-medium">Click to upload image</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={uploadImage}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -3,6 +3,9 @@ import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { FloatingWidgets } from "@/components/layout/FloatingWidgets";
+import CookieBanner from "@/components/layout/CookieBanner";
+import BackToTop from "@/components/layout/BackToTop";
+import ScrollProgress from "@/components/layout/ScrollProgress";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -43,11 +46,14 @@ export default function RootLayout({
       className={`${inter.variable} ${playfair.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
+        <ScrollProgress />
         <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-white p-2 z-[9999] rounded">Skip to content</a>
         <main id="main-content" className="flex-1 flex flex-col">
           {children}
         </main>
         <FloatingWidgets />
+        <CookieBanner />
+        <BackToTop />
         <Toaster position="bottom-right" richColors />
       </body>
     </html>
