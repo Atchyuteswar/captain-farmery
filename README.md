@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Captain Farmery - E-Commerce Platform
+
+A premium, full-stack e-commerce platform built for agricultural D2C products. This application delivers a "Wow" factor through rich aesthetics, dynamic animations, and seamless user experiences.
+
+## Tech Stack
+- **Framework:** Next.js 15 (App Router)
+- **Styling:** Tailwind CSS v4 (Inline Theme)
+- **Database ORM:** Prisma v5
+- **Authentication:** Auth.js (NextAuth v5)
+- **State Management:** Zustand (Persisted Cart)
+- **Animations:** Framer Motion
+- **Payments:** Razorpay Integration
+- **Icons:** Lucide React
+
+## Features
+- **Storefront:** Dynamic Homepage, Category Filtering, Autocomplete Search, Product Detail Pages.
+- **Shopping Cart:** Persistent slide-out cart powered by Zustand.
+- **Checkout:** Seamless Razorpay integration with secure signature verification.
+- **User Dashboard:** Order tracking, Profile Management, Saved Addresses.
+- **Admin Panel:** Complete Role-Based Access Control (RBAC) dashboard for managing Orders and Products.
+- **SEO Optimized:** Dynamic `sitemap.xml`, `robots.txt`, and OpenGraph tags.
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository and install dependencies:
+   ```bash
+   npm install
+   ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Set up your environment variables (`.env`):
+   ```env
+   DATABASE_URL="your_database_connection_string"
+   AUTH_SECRET="your_nextauth_secret"
+   NEXT_PUBLIC_RAZORPAY_KEY_ID="your_razorpay_key"
+   RAZORPAY_KEY_SECRET="your_razorpay_secret"
+   ```
+
+3. Run Prisma migrations and seed the database:
+   ```bash
+   npx prisma db push
+   npx prisma db seed
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Admin Access
+To access the admin panel (`/admin`), you must log in with an account whose `role` is set to `ADMIN` in the database.
