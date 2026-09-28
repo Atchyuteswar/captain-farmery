@@ -65,6 +65,7 @@ export async function POST(request: Request) {
             options: v.options || { size: v.name },
             isDefault: index === 0,
             sortOrder: index,
+          })),
         },
       },
       include: {

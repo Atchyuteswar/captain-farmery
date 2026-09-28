@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const data = await req.json();
     // @ts-ignore
     const faq = await prisma.fAQ.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         question: data.question,
         answer: data.answer,
