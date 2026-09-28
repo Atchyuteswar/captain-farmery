@@ -8,7 +8,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import SearchBar from "@/components/layout/SearchBar";
 import CartButton from "@/components/cart/CartButton";
 
-export default function Header() {
+export default function Header({ isAdmin = false }: { isAdmin?: boolean }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
 
@@ -61,10 +61,12 @@ export default function Header() {
               <span className="sr-only">Account</span>
             </Link>
 
-            <Link href="/admin" className={`${buttonVariants({ variant: "ghost", size: "icon" })} text-primary`}>
-              <ShieldCheck className="h-5 w-5" />
-              <span className="sr-only">Admin</span>
-            </Link>
+            {isAdmin && (
+              <Link href="/admin" className={`${buttonVariants({ variant: "ghost", size: "icon" })} text-primary`}>
+                <ShieldCheck className="h-5 w-5" />
+                <span className="sr-only">Admin</span>
+              </Link>
+            )}
 
             <CartButton />
           </div>
