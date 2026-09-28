@@ -629,7 +629,7 @@ export default function ProductForm({
             <div className="bg-muted/30 rounded-2xl p-4 border">
               <p className="text-xs text-muted-foreground mb-1">Google Search Preview</p>
               <p className="text-blue-700 text-lg font-medium truncate">{formData.metaTitle || formData.name || "Product Title"} | Captain Farmery</p>
-              <p className="text-green-700 text-sm">captain-farmery.vercel.app/product/{formData.slug || "..."}</p>
+              <p className="text-green-700 text-sm">{(process.env.NEXT_PUBLIC_APP_URL || "captain-farmery.vercel.app").replace(/^https?:\/\//, '')}/product/{formData.slug || "..."}</p>
               <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{formData.metaDesc || formData.shortDescription || "Product description will appear here..."}</p>
             </div>
 

@@ -33,9 +33,8 @@ export default function Header({ isAdmin = false }: { isAdmin?: boolean }) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
             <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
-            <Link href="/category/pure-honey" className="hover:text-primary transition-colors">Honey</Link>
-            <Link href="/category/spices" className="hover:text-primary transition-colors">Spices</Link>
             <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
             <Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link>
           </nav>
@@ -91,14 +90,11 @@ export default function Header({ isAdmin = false }: { isAdmin?: boolean }) {
           </Button>
         </div>
         <nav className="flex flex-col p-4 space-y-1">
+          <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
+            Home
+          </Link>
           <Link href="/shop" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
             Shop All
-          </Link>
-          <Link href="/category/pure-honey" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
-            Honey
-          </Link>
-          <Link href="/category/spices" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
-            Spices
           </Link>
           <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted font-medium transition-colors">
             About Us
