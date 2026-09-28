@@ -17,7 +17,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Captain Farmery | Premium Farm Products",
   description: "Pure, natural, and sustainably sourced farm products delivered to your doorstep. Experience the tradition of authentic Indian farming.",
-  metadataBase: new URL("https://captainfarmery.com"),
+  metadataBase: new URL("https://captain-farmery.vercel.app"),
   keywords: ["farm fresh", "organic", "spices", "honey", "d2c farm"],
   icons: {
     icon: "/favicon.ico",
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Captain Farmery | Premium Farm Products",
     description: "Pure, natural, and sustainably sourced farm products delivered to your doorstep.",
-    url: "https://captainfarmery.com",
+    url: "https://captain-farmery.vercel.app",
     siteName: "Captain Farmery",
     locale: "en_IN",
     type: "website",

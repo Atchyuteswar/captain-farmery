@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/account/', '/checkout/'],
     },
-    sitemap: 'https://captainfarmery.com/sitemap.xml',
+    sitemap: 'https://captain-farmery.vercel.app/sitemap.xml',
   }
 }
