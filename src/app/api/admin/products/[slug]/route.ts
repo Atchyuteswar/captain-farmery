@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(
   request: Request,
@@ -139,6 +140,8 @@ export async function PUT(
       include: { images: true, variants: true, category: true, inventory: true },
     });
 
+    revalidatePath("/", "layout");
+
     return NextResponse.json(finalProduct);
   } catch (error: any) {
     console.error("Error updating product:", error);
@@ -164,6 +167,8 @@ export async function DELETE(
     await prisma.product.delete({
       where: { slug }
     });
+
+    revalidatePath("/", "layout");
 
     return new NextResponse(null, { status: 204 });
   } catch (error) {
