@@ -9,9 +9,12 @@ import {
   Image as ImageIcon,
   MessageSquare,
   HelpCircle,
-  FolderTree
+  FolderTree,
+  Menu,
+  X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import AdminMobileMenu from "./AdminMobileMenu";
 
 export default function AdminLayout({
   children,
@@ -97,14 +100,14 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-muted/20">
-        <header className="h-16 bg-background border-b flex items-center justify-between px-8 md:hidden">
+      <main className="flex-1 overflow-y-auto bg-muted/20 w-full overflow-x-hidden">
+        <header className="h-16 bg-background border-b flex items-center justify-between px-4 md:hidden sticky top-0 z-50">
            <Link href="/admin">
             <span className="font-serif text-xl font-bold text-primary">Farmery Admin</span>
           </Link>
-          {/* Mobile menu toggle would go here */}
+          <AdminMobileMenu />
         </header>
-        <div className="p-8">
+        <div className="p-4 md:p-8 overflow-x-hidden">
           {children}
         </div>
       </main>
