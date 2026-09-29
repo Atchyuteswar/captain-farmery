@@ -140,9 +140,9 @@ export default function CheckoutPage() {
       });
       rzp1.open();
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      toast.error("Something went wrong during checkout.");
+      toast.error(error.message || "Something went wrong during checkout.");
     } finally {
       setIsProcessing(false);
     }

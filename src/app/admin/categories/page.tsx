@@ -32,7 +32,8 @@ export default async function AdminCategoriesPage() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <table className="w-full">
+        <div className="overflow-x-auto">
+          <table className="w-full">
           <thead className="bg-muted/50 border-b">
             <tr>
               <th className="text-left p-4 font-medium text-sm">Name</th>
@@ -75,6 +76,7 @@ export default async function AdminCategoriesPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

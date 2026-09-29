@@ -37,7 +37,8 @@ export default async function AdminFAQsPage() {
       </div>
 
       <div className="bg-background border rounded-2xl overflow-hidden shadow-sm">
-        <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[600px]">
           <thead>
             <tr className="bg-muted/50 text-muted-foreground text-sm border-b">
               <th className="p-4 font-medium w-16">Sort</th>
@@ -81,6 +82,7 @@ export default async function AdminFAQsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   );

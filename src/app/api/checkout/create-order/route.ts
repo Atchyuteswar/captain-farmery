@@ -92,59 +92,63 @@ export async function POST(request: Request) {
     const razorpayOrder = await razorpay.orders.create(options);
 
     // 5. Save order in DB
-    if (session?.user?.id) {
-      let shippingAddressId: string | undefined = clientAddressId;
-      if (!shippingAddressId && formData?.address && formData?.city && formData?.pincode) {
-        const address = await prisma.address.create({
-          data: {
-            userId: session.user.id,
-            fullName: `${formData.firstName || ""} ${formData.lastName || ""}`.trim() || "Customer",
-            phone: formData.phone || "",
-            line1: formData.address,
-            city: formData.city,
-            state: formData.state || "",
-            pincode: formData.pincode,
-          },
-        });
-        shippingAddressId = address.id;
-      }
-
-      const orderData: any = {
-        orderNumber: razorpayOrder.id,
-        subtotal: secureSubtotal,
-        shippingAmount: shippingAmount,
-        discount: discountAmount,
-        grandTotal: grandTotal,
-        status: "PENDING",
-        paymentStatus: "UNPAID",
-        currency: "INR",
-        items: {
-          create: orderItemsForDB,
-        },
+    // 5. Save order in DB
+    let shippingAddressId: string | undefined = clientAddressId;
+    if (!shippingAddressId && formData?.address && formData?.city && formData?.pincode) {
+      const addressData: any = {
+        fullName: `${formData.firstName || ""} ${formData.lastName || ""}`.trim() || "Customer",
+        phone: formData.phone || "",
+        line1: formData.address,
+        city: formData.city,
+        state: formData.state || "",
+        pincode: formData.pincode,
       };
-
-      if (session.user.id) {
-        orderData.user = { connect: { id: session.user.id } };
+      
+      if (session?.user?.id) {
+        addressData.userId = session.user.id;
       }
       
-      if (shippingAddressId) {
-        orderData.shippingAddress = { connect: { id: shippingAddressId } };
-      }
-
-      const order = await prisma.order.create({
-        data: orderData,
+      const address = await prisma.address.create({
+        data: addressData,
       });
-
-      await prisma.payment.create({
-        data: {
-          orderId: order.id,
-          provider: "RAZORPAY",
-          providerOrderId: razorpayOrder.id,
-          amount: grandTotal,
-          status: "UNPAID",
-        },
-      });
+      shippingAddressId = address.id;
     }
+
+    const orderData: any = {
+      orderNumber: razorpayOrder.id,
+      subtotal: secureSubtotal,
+      shippingAmount: shippingAmount,
+      discount: discountAmount,
+      grandTotal: grandTotal,
+      status: "PENDING",
+      paymentStatus: "UNPAID",
+      currency: "INR",
+      items: {
+        create: orderItemsForDB,
+      },
+    };
+
+    if (session?.user?.id) {
+      orderData.user = { connect: { id: session.user.id } };
+    }
+    
+    if (shippingAddressId) {
+      orderData.shippingAddress = { connect: { id: shippingAddressId } };
+    }
+
+    const order = await prisma.order.create({
+      data: orderData,
+    });
+
+    await prisma.payment.create({
+      data: {
+        orderId: order.id,
+        provider: "RAZORPAY",
+        providerOrderId: razorpayOrder.id,
+        amount: grandTotal,
+        status: "UNPAID",
+      },
+    });
 
     return NextResponse.json({
       id: razorpayOrder.id,
@@ -152,8 +156,8 @@ export async function POST(request: Request) {
       amount: razorpayOrder.amount,
       key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || "dummy_key",
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating order:", error);
-    return NextResponse.json({ error: "Failed to create order" }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Failed to create order" }, { status: 500 });
   }
 }
