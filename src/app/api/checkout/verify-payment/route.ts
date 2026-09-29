@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmationEmail } from "@/lib/email";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
   try {
@@ -42,6 +43,13 @@ export async function POST(request: Request) {
         },
         include: { items: true, user: true, shippingAddress: true }
       });
+
+      // Clear the DB cart if user is logged in
+      if (order.userId) {
+        await prisma.cart.deleteMany({
+          where: { userId: order.userId }
+        });
+      }
 
       // Deduct inventory
       for (const item of order.items) {
@@ -98,6 +106,8 @@ export async function POST(request: Request) {
       } catch (err) {
         console.error("Failed to send order confirmation email:", err);
       }
+
+      revalidatePath("/", "layout");
 
       return NextResponse.json({ success: true, orderId: payment.orderId });
     }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -31,6 +32,16 @@ export async function GET(request: Request) {
         }
       }
     });
+
+    // Fire and forget search history logging
+    const session = await auth();
+    prisma.searchHistory.create({
+      data: {
+        query,
+        resultCount: products.length,
+        userId: session?.user?.id || null,
+      }
+    }).catch(console.error);
 
     return NextResponse.json({ products });
   } catch (error) {

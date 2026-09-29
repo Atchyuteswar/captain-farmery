@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function PATCH(
   request: Request,
@@ -66,6 +67,8 @@ export async function PATCH(
         }
       }
     });
+
+    revalidatePath("/", "layout");
 
     return NextResponse.json(updatedOrder);
   } catch (error) {

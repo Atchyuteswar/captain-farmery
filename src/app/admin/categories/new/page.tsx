@@ -26,7 +26,7 @@ export default function NewCategoryPage() {
       }
     });
 
-    revalidatePath("/admin/categories");
+    revalidatePath("/", "layout");
     redirect("/admin/categories");
   }
 

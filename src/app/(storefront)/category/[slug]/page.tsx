@@ -6,7 +6,7 @@ import ShopControls from "@/components/catalog/ShopControls";
 import { ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { slug } = await params;

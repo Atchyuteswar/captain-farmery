@@ -140,6 +140,17 @@ export async function PUT(
       include: { images: true, variants: true, category: true, inventory: true },
     });
 
+    // Log admin action
+    prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        action: "UPDATE_PRODUCT",
+        entityType: "Product",
+        entityId: updatedProduct.id,
+        newValue: JSON.stringify({ name: updatedProduct.name, slug: updatedProduct.slug })
+      }
+    }).catch(console.error);
+
     revalidatePath("/", "layout");
 
     return NextResponse.json(finalProduct);
@@ -167,6 +178,16 @@ export async function DELETE(
     await prisma.product.delete({
       where: { slug }
     });
+
+    // Log admin action
+    prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        action: "DELETE_PRODUCT",
+        entityType: "Product",
+        entityId: slug, // using slug as ID for deleted items
+      }
+    }).catch(console.error);
 
     revalidatePath("/", "layout");
 

@@ -14,7 +14,7 @@ export default async function AdminCategoriesPage() {
     const id = formData.get("id") as string;
     if (id) {
       await prisma.category.delete({ where: { id } });
-      revalidatePath("/admin/categories");
+      revalidatePath("/", "layout");
     }
   }
 

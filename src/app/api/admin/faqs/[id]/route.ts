@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -16,6 +17,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         sortOrder: data.sortOrder,
       }
     });
+
+    revalidatePath("/", "layout");
+
     return NextResponse.json(faq);
   } catch (error) {
     return NextResponse.json({ error: "Failed to update FAQ" }, { status: 500 });

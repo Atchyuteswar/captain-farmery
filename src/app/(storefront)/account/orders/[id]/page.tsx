@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronLeft, Package, MapPin, Receipt, CheckCircle2, Clock, Truck, XCircle, RotateCcw, CreditCard } from "lucide-react";
+import ReturnRequestForm from "./ReturnRequestForm";
 
 const getStatusIcon = (status: string) => {
   switch (status.toUpperCase()) {
@@ -43,7 +44,9 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
       shippingAddress: true,
       timeline: {
         orderBy: { createdAt: "desc" }
-      }
+      },
+      shipments: true,
+      returns: true
     }
   });
 
@@ -192,6 +195,91 @@ export default async function OrderDetailsPage({ params }: { params: { id: strin
               </div>
             </div>
           )}
+
+          {/* Shipment Tracking */}
+          {order.shipments && order.shipments.length > 0 && (
+            <div className="bg-background rounded-3xl p-6 shadow-sm border border-border/50">
+              <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                <Truck className="w-5 h-5 text-muted-foreground" /> Tracking Details
+              </h2>
+              <div className="space-y-4">
+                {order.shipments.map(shipment => (
+                  <div key={shipment.id} className="text-sm space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Carrier:</span>
+                      <span className="font-medium">{shipment.provider || "Standard Shipping"}</span>
+                    </div>
+                    {shipment.trackingNumber && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Tracking #:</span>
+                        <span className="font-medium">{shipment.trackingNumber}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">Status:</span>
+                      <span className="px-2 py-1 bg-muted rounded-md font-medium text-xs">
+                        {shipment.status}
+                      </span>
+                    </div>
+                    {shipment.trackingUrl && (
+                      <a 
+                        href={shipment.trackingUrl} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="block mt-4 text-center w-full py-2 bg-primary/10 text-primary rounded-xl font-medium hover:bg-primary/20 transition-colors"
+                      >
+                        Track Package
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Returns & Support */}
+          <div className="bg-background rounded-3xl p-6 shadow-sm border border-border/50">
+            <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <RotateCcw className="w-5 h-5 text-muted-foreground" /> Returns & Support
+            </h2>
+            
+            {order.returns && order.returns.length > 0 ? (
+              <div className="space-y-3 text-sm">
+                <div className="bg-muted p-4 rounded-xl border border-border/50">
+                  <p className="font-bold mb-2 text-base flex items-center gap-2">
+                    Return Status: 
+                    <span className={`px-2 py-1 rounded-md text-xs ${
+                      order.returns[0].status === "APPROVED" || order.returns[0].status === "REFUNDED" 
+                        ? "bg-green-100 text-green-800" 
+                        : order.returns[0].status === "REJECTED" 
+                        ? "bg-red-100 text-red-800" 
+                        : "bg-amber-100 text-amber-800"
+                    }`}>
+                      {order.returns[0].status}
+                    </span>
+                  </p>
+                  <p><span className="text-muted-foreground">Reason:</span> {order.returns[0].reason}</p>
+                  <p><span className="text-muted-foreground">Method:</span> {order.returns[0].refundMethod}</p>
+                  {order.returns[0].adminNotes && (
+                    <div className="mt-3 p-2 bg-background rounded border text-muted-foreground">
+                      <strong>Note from admin:</strong> {order.returns[0].adminNotes}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : order.status === "DELIVERED" ? (
+              <div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  You can request a return within 7 days of delivery.
+                </p>
+                <ReturnRequestForm orderId={order.id} />
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                Returns can only be requested after the order has been delivered.
+              </p>
+            )}
+          </div>
 
         </div>
       </div>

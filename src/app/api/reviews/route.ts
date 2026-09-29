@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: Request) {
   try {
@@ -40,6 +41,8 @@ export async function POST(request: Request) {
         status: "APPROVED", // Auto-approve for now, could be PENDING in real world
       }
     });
+
+    revalidatePath("/", "layout");
 
     return NextResponse.json({ success: true, review });
 

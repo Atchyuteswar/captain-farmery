@@ -8,7 +8,7 @@ import ReviewSection from "@/components/product/ReviewSection";
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const { slug } = await params;
@@ -45,6 +45,15 @@ export default async function ProductPage({
   if (!product) {
     notFound();
   }
+
+  // Fire and forget product view logging
+  prisma.productView.create({
+    data: {
+      productId: product.id,
+      userId: session?.user?.id || null,
+      source: "direct",
+    }
+  }).catch(console.error);
 
   const fallbackImage = "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?q=80&w=1200&auto=format&fit=crop";
   const productImages = product.images.length > 0 

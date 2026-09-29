@@ -21,6 +21,7 @@ interface CartStore {
   clearCart: () => void;
   toggleCart: () => void;
   setIsOpen: (isOpen: boolean) => void;
+  setItems: (items: CartItem[]) => void;
   getTotalItems: () => number;
   getTotalPrice: () => number;
 }
@@ -71,6 +72,8 @@ export const useCartStore = create<CartStore>()(
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
       
       setIsOpen: (isOpen) => set({ isOpen }),
+
+      setItems: (items) => set({ items }),
 
       getTotalItems: () => {
         return get().items.reduce((total, item) => total + item.quantity, 0);

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, User, MapPin, CreditCard } from "lucide-react";
 import OrderStatusSelect from "./OrderStatusSelect";
+import ShipmentForm from "./ShipmentForm";
 
 export default async function AdminOrderDetailPage({
   params
@@ -20,7 +21,8 @@ export default async function AdminOrderDetailPage({
         include: { product: true }
       },
       payment: true,
-      shippingAddress: true
+      shippingAddress: true,
+      shipments: true,
     }
   });
 
@@ -137,6 +139,11 @@ export default async function AdminOrderDetailPage({
               ) : "No shipping address provided."}
             </p>
           </div>
+          
+          <ShipmentForm 
+            orderId={order.id} 
+            initialShipment={order.shipments?.[0] || null} 
+          />
         </div>
       </div>
     </div>

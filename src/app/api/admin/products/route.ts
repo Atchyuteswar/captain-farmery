@@ -109,6 +109,17 @@ export async function POST(request: Request) {
       });
     }
 
+    // Log admin action
+    prisma.auditLog.create({
+      data: {
+        userId: session.user.id,
+        action: "CREATE_PRODUCT",
+        entityType: "Product",
+        entityId: product.id,
+        newValue: JSON.stringify({ name: product.name, slug: product.slug })
+      }
+    }).catch(console.error);
+
     revalidatePath("/", "layout");
 
     return NextResponse.json(product, { status: 201 });

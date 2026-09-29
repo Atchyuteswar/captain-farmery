@@ -11,7 +11,8 @@ import {
   HelpCircle,
   FolderTree,
   Menu,
-  X
+  X,
+  RotateCcw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import AdminMobileMenu from "./AdminMobileMenu";
@@ -43,6 +44,12 @@ export default function AdminLayout({
             className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium transition-colors"
           >
             <ShoppingBag className="w-5 h-5 text-muted-foreground" /> Orders
+          </Link>
+          <Link 
+            href="/admin/returns" 
+            className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium transition-colors"
+          >
+            <RotateCcw className="w-5 h-5 text-muted-foreground" /> Returns
           </Link>
           <Link 
             href="/admin/products" 

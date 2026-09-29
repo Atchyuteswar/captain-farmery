@@ -34,7 +34,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/shop" className="hover:text-primary transition-colors">Shop All</Link></li>
               <li><Link href="/about" className="hover:text-primary transition-colors">Our Story</Link></li>
-              <li><Link href="/track-order" className="hover:text-primary transition-colors">Track Order</Link></li>
+              <li><Link href="/account/orders" className="hover:text-primary transition-colors">Track Order</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
             </ul>
           </div>
@@ -47,6 +47,7 @@ export default function Footer() {
               <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
               <li><Link href="/refund-policy" className="hover:text-primary transition-colors">Refund Policy</Link></li>
               <li><Link href="/shipping-policy" className="hover:text-primary transition-colors">Shipping Info</Link></li>
+              <li><Link href="/cookie-policy" className="hover:text-primary transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
 

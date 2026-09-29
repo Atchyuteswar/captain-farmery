@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
   try {
@@ -14,6 +15,9 @@ export async function POST(req: Request) {
         sortOrder: data.sortOrder,
       }
     });
+
+    revalidatePath("/", "layout");
+
     return NextResponse.json(faq);
   } catch (error) {
     return NextResponse.json({ error: "Failed to create FAQ" }, { status: 500 });

@@ -3,6 +3,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import CartDrawer from "@/components/cart/CartDrawer";
 import PageTransition from "@/components/layout/PageTransition";
+import StoreSync from "@/components/layout/StoreSync";
 import { auth } from "@/auth";
 
 export default async function StorefrontLayout({
@@ -15,6 +16,7 @@ export default async function StorefrontLayout({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <StoreSync isAuthenticated={!!session?.user} />
       <AnnouncementBar />
       <Header isAdmin={isAdmin} />
       <PageTransition>

@@ -13,7 +13,8 @@ import {
   HelpCircle,
   FolderTree,
   Menu,
-  X
+  X,
+  RotateCcw
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
@@ -46,6 +47,9 @@ export default function AdminMobileMenu() {
           </Link>
           <Link href="/admin/orders" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium">
             <ShoppingBag className="w-5 h-5 text-muted-foreground" /> Orders
+          </Link>
+          <Link href="/admin/returns" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium">
+            <RotateCcw className="w-5 h-5 text-muted-foreground" /> Returns
           </Link>
           <Link href="/admin/products" onClick={() => setIsOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-muted text-foreground font-medium">
             <ImageIcon className="w-5 h-5 text-muted-foreground" /> Products
