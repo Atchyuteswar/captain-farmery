@@ -357,14 +357,20 @@ export default function ProductForm({
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Stock (Qty)</label>
-                <input 
-                  type="number"
-                  min="0"
-                  value={formData.quantity}
-                  onChange={e => setFormData({...formData, quantity: e.target.value})}
-                  className="w-full border rounded-xl px-4 py-3 bg-muted/30 focus:ring-primary focus:border-primary"
-                  placeholder="Leave 0 if using variants"
-                />
+                {variants.length > 0 ? (
+                  <div className="w-full border rounded-xl px-4 py-3 bg-muted/30 text-muted-foreground text-sm flex items-center">
+                    Managed in Variants tab &rarr;
+                  </div>
+                ) : (
+                  <input 
+                    type="number"
+                    min="0"
+                    value={formData.quantity}
+                    onChange={e => setFormData({...formData, quantity: e.target.value})}
+                    className="w-full border rounded-xl px-4 py-3 bg-muted/30 focus:ring-primary focus:border-primary"
+                    placeholder="Stock quantity"
+                  />
+                )}
               </div>
             </div>
 

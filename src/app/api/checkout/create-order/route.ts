@@ -39,6 +39,8 @@ export async function POST(request: Request) {
         if (variant) {
           actualPrice = variant.price;
           variantName = variant.name;
+        } else {
+          return NextResponse.json({ error: `The variant for ${product.name} is no longer available. Please remove it from your cart and add it again.` }, { status: 400 });
         }
       }
 
